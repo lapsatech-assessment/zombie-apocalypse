@@ -100,4 +100,8 @@ public final class Configuration {
     public Stream<Movement> getZombieMovements() {
         return zombieMovements.stream();
     }
+
+    public BorderRule getBoardRule() {
+        return BorderRule.wrappingBorder(board);
+    }
 }

@@ -2,7 +2,7 @@ package test.zombieApocalypse;
 
 import java.util.List;
 
-public class GameStatistics {
+public final class GameStatistics {
 
     private final int zombiesScore;
     private final List<Position> zombiesPositions;
@@ -19,5 +19,4 @@ public class GameStatistics {
     public List<Position> getZombiesPositions() {
         return zombiesPositions;
     }
-
 }

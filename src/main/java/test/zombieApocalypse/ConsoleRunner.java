@@ -2,7 +2,7 @@ package test.zombieApocalypse;
 
 import java.io.IOException;
 
-public class ConsoleRunner {
+public final class ConsoleRunner {
 
     public static void main(String[] args) throws IOException {
         final Configuration configuration;
@@ -14,7 +14,7 @@ public class ConsoleRunner {
             throw new Error(); // effectively dead code
         }
         final ZombieApocalypseGame zombieApocalypseGame = ZombieApocalypseGame.of(configuration);
-        final GameStatistics statistics = zombieApocalypseGame.play();
+        final GameStatistics statistics = zombieApocalypseGame.play(new ConsoleWriterZombieApocalypseGameEventHandler());
         System.out.println("zombies score: " + statistics.getZombiesScore());
         System.out.println("zombies positions:");
         statistics.getZombiesPositions()

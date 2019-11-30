@@ -24,7 +24,12 @@ class ZombieApocalypseGameTest extends Specification {
         def zombieApocalypse = new ZombieApocalypseGame(configuration);
 
         when:
-        def result = zombieApocalypse.play()
+        def zombiesMovementOrder = [] as List;
+        def result = zombieApocalypse.play(new ZombieApocalypseGameEventHandler() {
+                    public void zombieNextMovement(Position previousPosition, Position currentPosition, int zombieId) {
+                        zombiesMovementOrder += zombieId
+                    }
+                })
 
         then:
         result.zombiesScore == 3
@@ -34,5 +39,31 @@ class ZombieApocalypseGameTest extends Specification {
             Position.of(1,0),
             Position.of(0,0)
         ].sort()
+        zombiesMovementOrder == [
+            1,
+            1,
+            1,
+            2,
+            1,
+            2,
+            1,
+            2,
+            1,
+            2,
+            2,
+            3,
+            2,
+            3,
+            3,
+            3,
+            4,
+            3,
+            4,
+            3,
+            4,
+            4,
+            4,
+            4
+        ] as List
     }
 }

@@ -71,7 +71,7 @@ public final class Position implements Comparable<Position> {
 
     @Override
     public String toString() {
-        return "Position [x=" + x + ", y=" + y + "]";
+        return "[x=" + x + ", y=" + y + "]";
     }
 
     @Override
@@ -99,10 +99,10 @@ public final class Position implements Comparable<Position> {
         return true;
     }
 
+    private static final Comparator<Position> COMPARATOR = Comparator.comparingInt(Position::getX).thenComparingInt(Position::getY);
+
     @Override
     public int compareTo(Position o) {
-        return Comparator.comparingInt(Position::getX)
-                .thenComparingInt(Position::getY)
-                .compare(this, o);
+        return COMPARATOR.compare(this, o);
     }
 }

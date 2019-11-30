@@ -15,10 +15,10 @@ public final class Board {
 
     private Board(int width, int height) {
         if (width <= 0) {
-            throw new IllegalArgumentException("Board width should by position non-zero integer");
+            throw new IllegalArgumentException("Board width should be positive non-zero integer");
         }
         if (height <= 0) {
-            throw new IllegalArgumentException("Board height should by position non-zero integer");
+            throw new IllegalArgumentException("Board height should be positive non-zero integer");
         }
         this.width = width;
         this.height = height;

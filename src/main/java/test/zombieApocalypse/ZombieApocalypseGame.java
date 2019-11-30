@@ -1,20 +1,15 @@
 package test.zombieApocalypse;
 
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.reducing;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.Deque;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Queue;
 
-public class ZombieApocalypseGame {
+public final class ZombieApocalypseGame {
 
     public static ZombieApocalypseGame of(Configuration configuration) {
         return new ZombieApocalypseGame(configuration);
@@ -22,68 +17,95 @@ public class ZombieApocalypseGame {
 
     private final Configuration configuration;
 
+    final BorderRule borderRule;
+    final List<Movement> movements;
+    int zombieIdCounter = 0;
+
     private ZombieApocalypseGame(Configuration configuration) {
         this.configuration = configuration;
+        this.borderRule = configuration.getBoardRule();
+        this.movements = configuration.getZombieMovements().collect(toList());
     }
 
     public GameStatistics play() {
+        return play(new ZombieApocalypseGameEventHandler() {
+        });
+    }
 
-        final List<Movement> movements = configuration.getZombieMovements().collect(toList());
-        final Board board = configuration.getBoard();
-        final BorderRule borderRule = BorderRule.cyclingBorder(board);
-
-        final Deque<Group> zombiesQueue = configuration.getInitialZombiePositions()
-                .collect(groupingBy(p -> p, reducing(0, e -> 1, Integer::sum)))
-                .entrySet()
-                .stream()
-                .map(Group::new)
+    public GameStatistics play(ZombieApocalypseGameEventHandler zombieApocalypseGameEventHandler) {
+        zombieApocalypseGameEventHandler.gameStarting();
+        final Deque<MovableMember> zombiesQueue = configuration.getInitialZombiePositions()
+                .map(MovableMember::new)
                 .collect(toCollection(LinkedList::new));
 
-        final Map<Position, Group> creaturesGrouped = configuration.getInitialCreaturePositions()
-                .collect(groupingBy(p -> p, reducing(0, e -> 1, Integer::sum)))
-                .entrySet()
-                .stream()
-                .map(Group::new)
-                .collect(toMap(g -> g.position, g -> g));
+        zombieApocalypseGameEventHandler
+                .initalZombiesPositions(zombiesQueue.stream().map(MovableMember::getCurrentPosition));
 
-        final Map<Position, Integer> zombiesResult = new HashMap<>();
+        final List<Position> creatures = configuration.getInitialCreaturePositions()
+                .collect(toList());
+
+        zombieApocalypseGameEventHandler.initalCreaturesPositions(creatures.stream());
 
         int convertedCount = 0;
-        Group groupOfZombies;
-        while ((groupOfZombies = zombiesQueue.pollFirst()) != null) {
-            Position zombie = groupOfZombies.position;
-            for (Movement movement : movements) {
-                zombie = zombie.transform()
-                        .apply(movement)
-                        .apply(borderRule)
-                        .complete();
-                final Group groupOfCreatures;
-                if ((groupOfCreatures = creaturesGrouped.remove(zombie)) != null) {
-                    zombiesQueue.offerLast(groupOfCreatures);
-                    convertedCount += groupOfCreatures.count;
+        final List<Position> zombiesFinalPositions = new ArrayList<>();
+
+        while (!zombiesQueue.isEmpty()) {
+            final MovableMember zombie = zombiesQueue.removeFirst();
+            if (zombie.nextStep()) {
+                zombiesQueue.addLast(zombie);
+                zombieApocalypseGameEventHandler.zombieNextMovement(zombie.getPreviousPosition(),
+                        zombie.getCurrentPosition(), zombie.id);
+                while (creatures.contains(zombie.currentPosition)) {
+                    creatures.remove(zombie.currentPosition);
+                    final MovableMember newZombie = new MovableMember(zombie.currentPosition);
+                    zombiesQueue.addLast(newZombie);
+                    convertedCount++;
+                    zombieApocalypseGameEventHandler.creatureConverted(newZombie.currentPosition, newZombie.id,
+                            convertedCount);
                 }
+            } else {
+                zombiesFinalPositions.add(zombie.currentPosition);
+                zombieApocalypseGameEventHandler.zombieFinishedMovement(zombie.currentPosition,
+                        zombie.id);
             }
-            final int groupOfZombiesCount = groupOfZombies.count;
-            zombiesResult.compute(zombie, (k, v) -> (v != null ? v.intValue() : 0) + groupOfZombiesCount);
         }
 
-        final List<Position> allTheZombies = zombiesResult.entrySet()
-                .stream()
-                .flatMap(e -> Collections.nCopies(e.getValue(), e.getKey()).stream())
-                .collect(Collectors.toList());
-
-        return new GameStatistics(convertedCount, allTheZombies);
+        zombieApocalypseGameEventHandler.gameFinished(convertedCount, zombiesFinalPositions.stream(),
+                creatures.stream());
+        return new GameStatistics(convertedCount, zombiesFinalPositions);
     }
 
+    private class MovableMember {
 
-    private class Group {
-        private final Position position;
-        private final int count;
+        private final int id = ++zombieIdCounter;
 
-        private Group(Map.Entry<Position, Integer> entry) {
-            this.position = entry.getKey();
-            this.count = entry.getValue();
+        private final Queue<Movement> pending;
+        private Position currentPosition;
+        private Position previousPosition = null;
+
+        private MovableMember(Position initialPosition) {
+            this.pending = new LinkedList<>(movements);
+            this.currentPosition = initialPosition;
+        }
+
+        boolean nextStep() {
+            if (pending.isEmpty()) {
+                return false;
+            }
+            previousPosition = currentPosition;
+            currentPosition = currentPosition.transform()
+                    .apply(pending.poll())
+                    .apply(borderRule)
+                    .complete();
+            return true;
+        }
+
+        private Position getCurrentPosition() {
+            return currentPosition;
+        }
+
+        private Position getPreviousPosition() {
+            return previousPosition;
         }
     }
-
 }

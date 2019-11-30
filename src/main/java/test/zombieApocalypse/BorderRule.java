@@ -5,7 +5,7 @@ import test.zombieApocalypse.Position.Transformer;
 
 public final class BorderRule implements Transformer {
 
-    public static BorderRule cyclingBorder(Board board) {
+    public static BorderRule wrappingBorder(Board board) {
         return new BorderRule(board);
     }
 

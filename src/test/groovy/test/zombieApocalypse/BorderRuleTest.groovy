@@ -6,7 +6,7 @@ class BorderRuleTest extends Specification {
     
     def 'Check that wrapping rules works correctly'() {
         given:
-        def rules = BorderRule.cyclingBorder(Board.square(3));
+        def rules = BorderRule.wrappingBorder(Board.square(3));
         
         when:
         def positionBuilder = rules.transform(Position.of(initialX, initialY).transform())
