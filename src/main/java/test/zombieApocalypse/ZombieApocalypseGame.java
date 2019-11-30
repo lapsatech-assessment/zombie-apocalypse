@@ -28,8 +28,7 @@ public final class ZombieApocalypseGame {
     }
 
     public GameStatistics play() {
-        return play(new ZombieApocalypseGameEventHandler() {
-        });
+        return play(ZombieApocalypseGameEventHandler.empty());
     }
 
     public GameStatistics play(ZombieApocalypseGameEventHandler zombieApocalypseGameEventHandler) {

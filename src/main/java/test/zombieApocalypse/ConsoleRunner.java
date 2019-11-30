@@ -14,7 +14,7 @@ public final class ConsoleRunner {
             throw new Error(); // effectively dead code
         }
         final ZombieApocalypseGame zombieApocalypseGame = ZombieApocalypseGame.of(configuration);
-        final GameStatistics statistics = zombieApocalypseGame.play(new ConsoleWriterZombieApocalypseGameEventHandler());
+        final GameStatistics statistics = zombieApocalypseGame.play(ZombieApocalypseGameEventHandler.consoleWriter());
         System.out.println("zombies score: " + statistics.getZombiesScore());
         System.out.println("zombies positions:");
         statistics.getZombiesPositions()
