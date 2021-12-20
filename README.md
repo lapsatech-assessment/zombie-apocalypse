@@ -15,11 +15,11 @@ mvn package
 ## Run sample from sample-input.txt
 
 ```shell
-java -jar target/zombie-apocalypse-4.4-SNAPSHOT.jar  < sample-input.txt
+java -jar zombie-apocalypse-game/target/zombie-apocalypse-game-CURRENT-SNAPSHOT.jar  < sample-input.txt
 ```
 
 ## Quickstart download & build & run
 
 ```shell
-./run.sh < sample-input.txt
+./run-sample.sh
 ```
