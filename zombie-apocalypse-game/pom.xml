@@ -4,7 +4,7 @@
   <parent>
     <groupId>test</groupId>
     <artifactId>zombie-apocalypse</artifactId>
-    <version>1.0-rc1</version>
+    <version>CURRENT-SNAPSHOT</version>
   </parent>
 
   <artifactId>zombie-apocalypse-game</artifactId>

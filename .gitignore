@@ -4,6 +4,9 @@
 .settings
 target
 
-# Maven release plugin stuff
+# Release Maven Plugin stuff
 pom.xml.releaseBackup
 release.properties
+
+# Versions Maven Plugin stuff
+pom.xml.versionsBackup
