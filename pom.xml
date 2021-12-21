@@ -13,8 +13,8 @@
   </modules>
 
   <scm>
-    <connection>https://github.com/lapsatech/zombie-apocalypse.git</connection>
-    <developerConnection>git@github.com:lapsatech/zombie-apocalypse.git</developerConnection>
+    <connection>scm:git:https://github.com/lapsatech/zombie-apocalypse.git</connection>
+    <developerConnection>scm:git:git@github.com:lapsatech/zombie-apocalypse.git</developerConnection>
   </scm>
 
   <properties>
