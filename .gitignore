@@ -1,5 +1,12 @@
-# Eclipse IDE stuff
+# eclipse IDE stuff
+.project
 .classpath
 .settings
-.project
-target/
+target
+
+# Release Maven Plugin stuff
+pom.xml.releaseBackup
+release.properties
+
+# Versions Maven Plugin stuff
+pom.xml.versionsBackup
