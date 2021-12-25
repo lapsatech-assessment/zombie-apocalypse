@@ -15,6 +15,7 @@
   <scm>
     <connection>scm:git:https://github.com/lapsatech/zombie-apocalypse.git</connection>
     <developerConnection>scm:git:git@github.com:lapsatech/zombie-apocalypse.git</developerConnection>
+    <tag>HEAD</tag>
   </scm>
 
   <properties>
